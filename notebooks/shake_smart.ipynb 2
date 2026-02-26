@@ -1,0 +1,240 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": []
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Problem Setup\n",
+        "\n",
+        "### Shake Smart Optimization Problem\n",
+        "Shake Smart wants to optimize the production of four shake varieties: Berry Bliss, Tropical Delight, Mango Magic, and Green Zing.\n",
+        "Each shake contributes differently to revenue and has specific ingredient requirements for fruit puree, yogurt, and honey.\n",
+        "This problem will use linear programming to determine the optimal production plan to maximize revenue."
+      ],
+      "metadata": {
+        "id": "cgswVE7UNGI8"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#Import Libraries\n",
+        "!pip install pulp\n",
+        "from pulp import LpProblem, LpMaximize, LpVariable, lpSum"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "vfyhftnHGPg1",
+        "outputId": "e2038700-a92f-4693-dadd-2dfa306825fd"
+      },
+      "execution_count": 6,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Requirement already satisfied: pulp in /usr/local/lib/python3.10/dist-packages (2.9.0)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "### Data Definition\n",
+        "We define the parameters for the problem:\n",
+        "- Shake types: ['Berry Bliss', 'Tropical Delight', 'Mango Magic', 'Green Zing']\n",
+        "- Ingredient availability (ounces):\n",
+        "  - Fruit puree: 16,000\n",
+        "  - Yogurt: 5,000\n",
+        "  - Honey: 3,500\n",
+        "- Minimum production levels:\n",
+        "  - Berry Bliss: 300\n",
+        "  - Tropical Delight: 400\n",
+        "  - Mango Magic: 500\n",
+        "  - Green Zing: 600\n",
+        "- Revenue per ounce:\n",
+        "  - Berry Bliss: $1.8\n",
+        "\n",
+        "  - Tropical Delight: $2.4\n",
+        "\n",
+        "  - Mango Magic: $2.0\n",
+        "  \n",
+        "  - Green Zing: $3.0\n",
+        "- Ingredient proportions:\n",
+        "  - Berry Bliss: at least 12% yogurt, 8% honey\n",
+        "  - Tropical Delight: at least 18% yogurt, 15% honey\n",
+        "  - Mango Magic: at least 10% yogurt, 12% honey\n",
+        "  - Green Zing: at least 20% yogurt, 10% honey"
+      ],
+      "metadata": {
+        "id": "XdxNu1YpNXdE"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Code cell: Data Initialization\n",
+        "# Data for the problem\n",
+        "shake_types = ['Berry Bliss', 'Tropical Delight', 'Mango Magic', 'Green Zing']\n",
+        "ingredient_availability = {\n",
+        "    'fruit_puree': 16000,\n",
+        "    'yogurt': 5000,\n",
+        "    'honey': 3500\n",
+        "}\n",
+        "min_production = {\n",
+        "    'Berry Bliss': 300,\n",
+        "    'Tropical Delight': 400,\n",
+        "    'Mango Magic': 500,\n",
+        "    'Green Zing': 600\n",
+        "}\n",
+        "revenue_per_ounce = {\n",
+        "    'Berry Bliss': 1.8,\n",
+        "    'Tropical Delight': 2.4,\n",
+        "    'Mango Magic': 2.0,\n",
+        "    'Green Zing': 3.0\n",
+        "}\n",
+        "ingredient_proportions = {\n",
+        "    'Berry Bliss': {'yogurt': 0.12, 'honey': 0.08},\n",
+        "    'Tropical Delight': {'yogurt': 0.18, 'honey': 0.15},\n",
+        "    'Mango Magic': {'yogurt': 0.10, 'honey': 0.12},\n",
+        "    'Green Zing': {'yogurt': 0.20, 'honey': 0.10}\n",
+        "}\n"
+      ],
+      "metadata": {
+        "id": "GUKJXTRGNupZ"
+      },
+      "execution_count": 7,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Code cell: Define the Model\n",
+        "# Create the problem\n",
+        "problem = LpProblem(\"Maximize_Shake_Smart_Revenue\", LpMaximize)\n",
+        "\n",
+        "# Decision variables\n",
+        "production = {shake: LpVariable(f\"Production_{shake}\", lowBound=0, cat='Continuous') for shake in shake_types}\n",
+        "\n",
+        "# Objective function\n",
+        "problem += lpSum(revenue_per_ounce[shake] * production[shake] for shake in shake_types), \"Total_Revenue\"\n",
+        "\n",
+        "# Constraints\n",
+        "# Ingredient availability constraints\n",
+        "problem += lpSum(production[shake] for shake in shake_types) <= ingredient_availability['fruit_puree'], \"Fruit_Puree_Constraint\"\n",
+        "problem += lpSum(ingredient_proportions[shake]['yogurt'] * production[shake] for shake in shake_types) <= ingredient_availability['yogurt'], \"Yogurt_Constraint\"\n",
+        "problem += lpSum(ingredient_proportions[shake]['honey'] * production[shake] for shake in shake_types) <= ingredient_availability['honey'], \"Honey_Constraint\"\n",
+        "\n",
+        "# Minimum production constraints\n",
+        "for shake in shake_types:\n",
+        "    problem += production[shake] >= min_production[shake], f\"Min_Production_{shake}\"\n"
+      ],
+      "metadata": {
+        "id": "2af_-cD3Nzqg"
+      },
+      "execution_count": 8,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Markdown cell: Solving the Problem\n",
+        "\n",
+        "### Solving the Optimization Problem\n",
+        "We use the PuLP library to solve the linear programming model."
+      ],
+      "metadata": {
+        "id": "g4TuLHuNN5cy"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Code cell: Solve the Model\n",
+        "problem.solve()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "bPN-1ZeyN-D1",
+        "outputId": "04d14b03-e1c4-436f-b70e-f0cb13c700cd"
+      },
+      "execution_count": 9,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "1"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 9
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "\n",
+        "# Markdown cell: Results Interpretation\n",
+        "\"\"\"\n",
+        "### Results Interpretation\n",
+        "The optimal production plan for maximizing revenue while meeting resource constraints and minimum production levels is as follows:\n",
+        "\"\"\""
+      ],
+      "metadata": {
+        "id": "jB_IGgIAOAzL"
+      }
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 10,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "-fItX-NMGLTF",
+        "outputId": "75651d88-a846-4b84-920a-ef8c871a835e"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Status: 1\n",
+            "Berry Bliss: 300.00 ounces\n",
+            "Tropical Delight: 400.00 ounces\n",
+            "Mango Magic: 500.00 ounces\n",
+            "Green Zing: 14800.00 ounces\n",
+            "Maximum Revenue: 46900.0\n"
+          ]
+        }
+      ],
+      "source": [
+        "# Code cell: Print Results\n",
+        "print(\"Status:\", problem.status)\n",
+        "for shake in shake_types:\n",
+        "    print(f\"{shake}: {production[shake].varValue:.2f} ounces\")\n",
+        "print(\"Maximum Revenue:\", problem.objective.value())\n"
+      ]
+    }
+  ]
+}
