@@ -21,3 +21,9 @@ Maximize revenue/profit while meeting ingredient constraints and product mix req
 ## Files
 - Summary (PDF): docs/shake_smart_summary.pdf
 - Notebook: notebooks/shake_smart.ipynb 2
+
+## Key Visuals
+![Inputs & Constraints](artifacts/01_inputs_constraints.png)
+![Model Formulation](artifacts/02_model_formulation.png)
+![Optimal Production](artifacts/03_optimal_production.png)
+![Resource Utilization](artifacts/04_resource_utilization.png)
