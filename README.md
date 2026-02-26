@@ -15,12 +15,9 @@ Maximize revenue/profit while meeting ingredient constraints and product mix req
 - Solved using PuLP and validated feasibility
 - Ran what-if/sensitivity scenarios to test cost/demand/availability changes
 
-## Key Outputs
-(Add images in `/artifacts`)
 
 ## Files
-- Summary (PDF): docs/shake_smart_summary.pdf
-- Notebook: notebooks/shake_smart.ipynb 2
+- Notebook: [shake_smart.ipynb](notebooks/shake_smart.ipynb%202)
 
 ## Key Visuals
 ![Inputs & Constraints](artifacts/01_inputs_constraints.png)
