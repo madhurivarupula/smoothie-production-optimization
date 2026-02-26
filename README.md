@@ -20,4 +20,4 @@ Maximize revenue/profit while meeting ingredient constraints and product mix req
 
 ## Files
 - Summary (PDF): docs/shake_smart_summary.pdf
-- Notebook: notebooks/shake_smart.ipynb
+- Notebook: notebooks/shake_smart.ipynb 2
