@@ -1,32 +1,23 @@
-# Smoothie Production Optimization (Linear Programming / PuLP)
+# Shake Smart Production Optimization (4-Smoothie LP / PuLP)
 
-Built a linear programming model to maximize smoothie revenue under ingredient and recipe constraints, and generated an optimal production plan using Python (PuLP).
+Built a linear programming (LP) model to optimize smoothie production across **4 SKUs** under ingredient availability and recipe constraints. Implemented in **Python (PuLP)** and used what-if/sensitivity analysis to support planning decisions.
 
 ## Business Objective
-Maximize revenue while meeting ingredient availability and recipe composition requirements.
+Maximize revenue/profit while meeting ingredient constraints and product mix requirements.
 
-## Data & Constraints
-- Ingredients: fruit puree, yogurt, honey
-- Recipe composition constraints for Berry Bliss and Tropical Delight
-- Resource limits and non-negativity constraints
+## Model Scope
+- Products: Berry Bliss, Tropical Delight, Mango Magic, Green Zing
+- Constraints: ingredient availability + recipe requirements + non-negativity
+- Output: optimal production quantities + KPI summary (revenue/profit, capacity utilization)
 
 ## Approach
-- Formulated an LP model (decision variables, objective, constraints)
-- Implemented and solved using Python + PuLP
+- Converted business rules into LP decision variables, objective function, and constraints
+- Solved using PuLP and validated feasibility
+- Ran what-if/sensitivity scenarios to test cost/demand/availability changes
 
-## Result
-Optimal plan produced **15,000 oz Tropical Delight** and **0 oz Berry Bliss** under the given constraints.
-
-## Recommendations
-Increase yogurt/honey capacity, explore new SKUs, and monitor ingredient cost/availability.
-
-## Key Visuals
-![Data & Constraints](artifacts/01_data_constraints.png)
-![Model Formulation](artifacts/02_model_formulation.png)
-![Method](artifacts/03_method_pulp.png)
-![Solution](artifacts/04_solution.png)
-![Recommendations](artifacts/05_recommendations.png)
+## Key Outputs
+(Add images in `/artifacts`)
 
 ## Files
-- Slide deck: [smoothie_optimization_deck.pdf](docs/smoothie_optimization_deck.pdf)
-- Notebook: [shake_smart.ipynb](notebooks/shake_smart.ipynb)
+- Summary (PDF): docs/shake_smart_summary.pdf
+- Notebook: notebooks/shake_smart.ipynb
